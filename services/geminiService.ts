@@ -73,7 +73,7 @@ export const estimateFood = async (description: string): Promise<{ name: string;
   );
 
   if (localMatch) {
-    console.log(`Using local DB for: ${description} -> ${localMatch.name}`);
+
 
     // Simple multiplier logic (very basic)
     // If input contains numbers like "2", "3", multiply the stats
