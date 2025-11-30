@@ -1,20 +1,65 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# BeefUp - Dynamic Calorie Tracker 🥩💪
 
-# Run and deploy your AI Studio app
+A calorie tracker that doesn't just count numbers—it visualizes your progress.
 
-This contains everything you need to run your app locally.
+## 💡 The Spark: How This Idea Came Up
 
-View your app in AI Studio: https://ai.studio/apps/drive/13W4O-cihT0kaImCDaInfkggucKQp0LIx
+Let's face it: most calorie trackers are glorified spreadsheets. They are boring, static, and feel like a chore. You log your food, see a number go up, and that's it. There's no emotional connection, no visual reward.
 
-## Run Locally
+**BeefUp was born from a simple question:** *What if your calorie tracker felt like a video game character leveling up?*
 
-**Prerequisites:**  Node.js
+We wanted to create an app where you don't just "hit a macro target"—you actually *see* the result. We wanted to gamify the process of getting healthy, making it engaging, dynamic, and specifically tailored to users who often feel left out by Western-centric apps.
 
+## 🚀 What Makes It Dynamic?
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Unlike traditional trackers that just show progress bars, BeefUp is **alive**:
+
+*   **Visual Feedback Loop**: The core of the app is a dynamic stick figure that changes based on your input. As you hit your protein goals, your character visibly "beefs up," gaining muscle mass. If you're in a surplus, it reflects that. It's instant, visual gratification for your hard work.
+*   **Real-Time Adaptation**: The interface reacts to your data. The aesthetics aren't static; they shift to match the "premium" feel of a high-end fitness tool, keeping you engaged.
+
+## ✨ Unique Aspects
+
+### 1. 🧠 AI-Powered Food Estimation (Gemini API)
+Stop searching for "Mom's homemade paneer butter masala" and getting 50 different results with wild variations.
+*   **Smart Estimation**: We use Google's Gemini AI to estimate calories and protein for *any* description.
+*   **Natural Language**: Just type "2 homemade rotis and a bowl of dal" and let the AI do the math. No more weighing every gram if you don't want to.
+
+### 2. 🇮🇳 Built for Indian Context
+Most global apps fail when it comes to Indian food.
+*   **Curated Database**: We have a built-in, verified database of common Indian meals (Roti, Dal, Paneer, Rice, etc.).
+*   **Hybrid Search**: The app intelligently switches between our local Indian database for speed and accuracy, and Gemini AI for everything else.
+
+### 3. 🎨 Premium Aesthetic
+*   **Dark Mode First**: Designed with a sleek, modern dark theme that looks great on all devices.
+*   **Glassmorphism & Micro-interactions**: Smooth animations and a polished UI make the act of logging food feel satisfying, not tedious.
+
+## 🛠️ Tech Stack
+
+*   **Frontend**: React (Vite) + TypeScript
+*   **AI**: Google Gemini API
+*   **Styling**: Vanilla CSS (Custom Design System)
+*   **Icons**: Lucide React
+
+## 🏃‍♂️ Run Locally
+
+1.  **Clone the repo**
+    ```bash
+    git clone https://github.com/Abhaygithub7/Dynamic-Calorie-Tracker.git
+    cd Dynamic-Calorie-Tracker
+    ```
+
+2.  **Install dependencies**
+    ```bash
+    npm install
+    ```
+
+3.  **Set up Environment Variables**
+    Create a `.env.local` file in the root directory and add your Gemini API key:
+    ```env
+    VITE_API_KEY=your_gemini_api_key_here
+    ```
+
+4.  **Run the app**
+    ```bash
+    npm run dev
+    ```
