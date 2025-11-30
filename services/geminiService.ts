@@ -1,24 +1,37 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { Type } from "@google/genai";
 import { UserProfile } from "../types";
-
-const getAi = () => {
-  const apiKey = import.meta.env.VITE_API_KEY;
-  if (!apiKey) {
-    throw new Error("API Key missing. Please set VITE_API_KEY in .env.local");
-  }
-  return new GoogleGenAI({ apiKey });
-};
 
 // Helper to strip code fences if Gemini returns markdown
 const cleanText = (text: string) => {
   return text.replace(/```json/g, '').replace(/```/g, '').trim();
 };
 
+const callGeminiApi = async (prompt: string, schema?: any) => {
+  try {
+    const response = await fetch('/api/gemini', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ prompt, schema }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `API Error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return JSON.parse(cleanText(data.text));
+  } catch (error) {
+    console.error("Failed to call Gemini API:", error);
+    throw error;
+  }
+};
+
 export const generateDietPlan = async (profile: UserProfile): Promise<
   { targetCalories: number; targetProtein: number; advice: string }
 > => {
-  const ai = getAi();
-
   const prompt = `
     Calculate the daily calorie and protein target for a user with the following stats:
     Age: ${profile.age}
@@ -33,26 +46,17 @@ export const generateDietPlan = async (profile: UserProfile): Promise<
     The advice should be motivational and specific to their goal.
   `;
 
-  const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: {
-          targetCalories: { type: Type.NUMBER },
-          targetProtein: { type: Type.NUMBER },
-          advice: { type: Type.STRING }
-        },
-        required: ["targetCalories", "targetProtein", "advice"]
-      }
-    }
-  });
+  const schema = {
+    type: Type.OBJECT,
+    properties: {
+      targetCalories: { type: Type.NUMBER },
+      targetProtein: { type: Type.NUMBER },
+      advice: { type: Type.STRING }
+    },
+    required: ["targetCalories", "targetProtein", "advice"]
+  };
 
-  const text = response.text;
-  if (!text) throw new Error("No response from Gemini");
-  return JSON.parse(cleanText(text));
+  return callGeminiApi(prompt, schema);
 };
 
 import { indianFoodDB } from "../data/indianFoodDB";
@@ -87,32 +91,21 @@ export const estimateFood = async (description: string): Promise<{ name: string;
   }
 
   // 2. Fallback to Gemini API
-  const ai = getAi();
-
   const prompt = `
     Estimate the calories and protein for: "${description}".
     Return a JSON object with name (short display name), calories (number), and protein (number in grams).
     Be conservative but realistic.
   `;
 
-  const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: {
-          name: { type: Type.STRING },
-          calories: { type: Type.NUMBER },
-          protein: { type: Type.NUMBER }
-        },
-        required: ["name", "calories", "protein"]
-      }
-    }
-  });
+  const schema = {
+    type: Type.OBJECT,
+    properties: {
+      name: { type: Type.STRING },
+      calories: { type: Type.NUMBER },
+      protein: { type: Type.NUMBER }
+    },
+    required: ["name", "calories", "protein"]
+  };
 
-  const text = response.text;
-  if (!text) throw new Error("No response from Gemini");
-  return JSON.parse(cleanText(text));
+  return callGeminiApi(prompt, schema);
 };
